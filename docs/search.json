@@ -1,0 +1,44 @@
+[
+  {
+    "objectID": "ST558MW4MBeebe.html#question-1",
+    "href": "ST558MW4MBeebe.html#question-1",
+    "title": "ST558 Homework 4",
+    "section": "Question 1",
+    "text": "Question 1\n\nWrite a function for RMSE"
+  },
+  {
+    "objectID": "ST558MW4MBeebe.html#question-2",
+    "href": "ST558MW4MBeebe.html#question-2",
+    "title": "ST558 Homework 4",
+    "section": "Question 2",
+    "text": "Question 2\n\nCreate response and prediction values\n\nset.seed(10)\nn &lt;- 100\nx &lt;- runif(n)\nresp &lt;- 3 + 10*x + rnorm(n)\npred &lt;- predict(lm(resp ~ x), data.frame(x))\n\n\n\nTest RMSE function\n\n\nRepeat with missing values"
+  },
+  {
+    "objectID": "ST558MW4MBeebe.html#question-3",
+    "href": "ST558MW4MBeebe.html#question-3",
+    "title": "ST558 Homework 4",
+    "section": "Question 3",
+    "text": "Question 3\n\nWrite a function for MAE"
+  },
+  {
+    "objectID": "ST558MW4MBeebe.html#question-4",
+    "href": "ST558MW4MBeebe.html#question-4",
+    "title": "ST558 Homework 4",
+    "section": "Question 4",
+    "text": "Question 4\n\nCreate response values and predicitons\n\nset.seed(10)\nn &lt;- 100\nx &lt;- runif(n)\nresp &lt;- 3 + 10*x + rnorm(n)\npred &lt;- predict(lm(resp ~ x), data.frame(x))\n\n\n\nTest MAE function\n\n\nRepeat MAE function with missing values"
+  },
+  {
+    "objectID": "ST558MW4MBeebe.html#question-5",
+    "href": "ST558MW4MBeebe.html#question-5",
+    "title": "ST558 Homework 4",
+    "section": "Question 5",
+    "text": "Question 5\n\nCreate wrapper function incorporating getRMSE and get MAE"
+  },
+  {
+    "objectID": "ST558MW4MBeebe.html#question-6",
+    "href": "ST558MW4MBeebe.html#question-6",
+    "title": "ST558 Homework 4",
+    "section": "Question 6",
+    "text": "Question 6\n\nCreate response and prediction values\n\nset.seed(10)\nn &lt;- 100\nx &lt;- runif(n)\nresp &lt;- 3 + 10*x + rnorm(n)\npred &lt;- predict(lm(resp ~ x), data.frame(x))\n\n\n\nTest wrapper function\n\n\nRepeat wrapper test with missing values\n\n\nTest wrapper function with the wrong data type"
+  }
+]

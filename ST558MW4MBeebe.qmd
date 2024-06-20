@@ -1,0 +1,135 @@
+---
+title: "ST558 Homework 4"
+author: "Melanie Beebe"
+format: html
+editor: visual
+---
+
+## 
+
+# Task 1: Conceptual Questions
+
+1.  
+
+    i\. What is the purpose of the lapply() function?
+
+    > lapply() is part of the apply() family of functions and means list apply. lapply() applies a function over a list or vector and is useful when you want to apply a function to each element of a list or vector. lapply() always returns a list.
+
+    ii\. What is the equivalent purrr function?
+
+    > The equivalent purr function is map().
+
+2.  Suppose we have a list called my_list. Each element of the list is a numeric data frame (all columns
+    are numeric). We want use lapply() to run the code cor(numeric_matrix, method = "kendall")
+    on each element of the list. Write code to do this below!
+
+    > lapply(my_list, function(numeric_matrix) cor(numeric_matrix, method = "kendall"))
+
+3.  What are two advantages of using purrr functions instead of the BaseR apply family?
+
+    > consistency between functions (like order of arguments) and the helpers
+
+4.  What is a side-effect function?
+
+    > A side effect function is a function that does not modify the data and isn't returned, but produces something.
+
+5.  Why can you name a variable sd in a function and not cause any issues with the sd function?
+
+    > A function has it's own environment so when R is looking for the object it looks in the most local environment, which in this case, is the function environment.
+
+# Task 2: Writing R Functions
+
+## Question 1
+
+### Write a function for RMSE
+
+## Question 2
+
+### Create response and prediction values
+
+```{r}
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+
+```
+
+### Test RMSE function
+
+```{r}
+
+```
+
+### Repeat with missing values
+
+```{r}
+
+```
+
+## Question 3
+
+### Write a function for MAE
+
+## Question 4
+
+### Create response values and predicitons
+
+```{r}
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+```
+
+### Test MAE function
+
+```{r}
+
+```
+
+### Repeat MAE function with missing values
+
+```{r}
+
+```
+
+## Question 5
+
+### Create wrapper function incorporating  getRMSE and get MAE
+
+## Question 6
+
+### Create response and prediction values
+
+```{r}
+set.seed(10)
+n <- 100
+x <- runif(n)
+resp <- 3 + 10*x + rnorm(n)
+pred <- predict(lm(resp ~ x), data.frame(x))
+```
+
+### Test wrapper function
+
+```{r}
+
+```
+
+### Repeat wrapper test with missing values
+
+```{r}
+
+```
+
+### Test wrapper function with the wrong data type
+
+```{r}
+
+```
+
+# Querying and API and Tidy_Style Function
+
+##  
