@@ -68,7 +68,7 @@ squared_differences <- getRMSE(response_vec, prediction_vec)
 squared_differences
 ```
 
-The next step is to sum up our squared differences and divide by n, which can be performed using mean(). The next step of taking the square root will also be added using map_dbl(). These steps ar also being combined with the previous steps to result in the final function for calculating RMSE.
+The next step is to sum up our squared differences and divide by n, which can be performed using mean(). The next step of taking the square root will also be added using map_dbl(). These steps are also being combined with the previous steps to result in the final function for calculating RMSE.
 
 ```{r}
 getRMSE <- function(vector1, vector2, ...) {
@@ -184,7 +184,7 @@ getMAE(resp, pred, na.rm =TRUE)
 
 ### Create wrapper function incorporating getRMSE and getMAE
 
-To generate a wrapper function that can return both RMSE and MAE or one of the two, we can add an argument called "metrics" that consists of RMSE and MAE as the default. This will result in the return of both calculations as a list. The first requirement for this wrapper function is to check that the input data are numeric vectors. To do so, we can incorporate checks using is.vector( ), is.atomic) and is.numeric(). If the data inputs do not match one or more of these requirements, the function will abort and return that the vector "is not an atomic numeric vector". To allow the user to specify what calculations they want, we can use a series of if else statements. The first statement is for the default, specifying RMSE and MAE as both being in "metrics". To return the proper result, it must be one object, so a list is used to return a list containing both RMSE and MAE. The next two if else statements specify what should be returned if RMSE or MAE are specified as a metrics argument when the function is called.
+To generate a wrapper function that can return both RMSE and MAE or one of the two, we can add an argument called "metrics" that consists of RMSE and MAE as the default. This will result in the return of both calculations as a list. The first requirement for this wrapper function is to check that the input data are numeric vectors. To do so, we can incorporate checks using is.vector( ), is.atomic) and is.numeric(). If the data inputs do not match one or more of these requirements, the function will abort and return that the vector "is not an atomic numeric vector". To allow the user to specify what calculations they want, we can use a series of if else statements. The first statement is for the default, specifying RMSE and MAE as both being in "metrics". To return the proper result, it must be one object, so list() is used to return a list containing both RMSE and MAE. The next two if else statements specify what should be returned if RMSE or MAE are specified as a metrics argument when the function is called.
 
 ```{r}
 RMSE_MAE_wrapper <- function(vector1, vector2, metrics = c("RMSE", "MAE"), ...) {
@@ -321,7 +321,7 @@ The raw data will be parsed by accessing content with \$content and selecting "a
 
 ```{r}
 parsed <- fromJSON(rawToChar(id_info$content))
-parsed
+str(parsed)
 alphafold_info <- as_tibble(parsed$articles) 
 alphafold_info
 alphafold_info |>
@@ -331,7 +331,7 @@ alphafold_info |>
 
 ## Question 3
 
-The goal here is to write a function that can query newsapi.org. The function will take in arguments "subject", for the topic of interest and "start_date" for the "&from" portion of the URL which specifies the date from which to start the search. There is also an "api_key" argument, but the function is designed with the intent that the user stores their key in a file called api_key.R for security purposes, so "api_key" will always used for this argument. The URL is constructed based on the user's input arguments using paste0() . If we had wanted to hardcode the API key, the function would be the same but the source("api_key.R) line would be removed from the function code and the user would replace the api_key argument with their own API key when they call the function. The rest of the code is the same as above. One caveat with the date is that the user may not specify the correct format for date, so code could be added to the function to account for this (I couldn't figure this out) or a comment can be added within the function to specify the date format. Another potential issue is if someone wants to enter a subject with two words. For the function to work properly, the URL needs to be constructed so that a space in the form of "%20" is added between the words. A Google search turned up the function gsub(), so that is incorporated into the function to allow for a subject argument with more than one word. This function takes in the pattern, replacement and x (subject in our case). The complete function is presented below and was tested on the AlphaFold query. Returned results were the same as obtained previously.
+The goal here is to write a function that can query newsapi.org. The function will take in arguments "subject", for the topic of interest and "start_date" for the "&from" portion of the URL which specifies the date from which to start the search. There is also an "api_key" argument, but the function is designed with the intent that the user stores their key in a file called api_key.R for security purposes, so "api_key" will always used for this argument. The URL is constructed based on the user's input arguments using paste0(). If we had wanted to hardcode the API key, the function would be the same but the source("api_key.R) line would be removed from the function code and the user would replace the api_key argument with their own API key when they call the function. The rest of the code is the same as above. One caveat with the date is that the user may not specify the correct format for date, so code could be added to the function to account for this (I couldn't figure this out) or a comment can be added within the function to specify the date format. Another potential issue is if someone wants to enter a subject with two words. For the function to work properly, the URL needs to be constructed so that a space in the form of "%20" is added between the words. A Google search turned up the function gsub(), so that is incorporated into the function to allow for a subject argument with more than one word. This function takes in the pattern, replacement and x (subject in our case). The complete function is presented below and was tested on the AlphaFold query. Returned results were the same as obtained previously.
 
 ```{r}
 api_query <- function(subject, start_date = "2024-01-25", api_key) {
