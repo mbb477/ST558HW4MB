@@ -9,9 +9,7 @@ editor: visual
 
 # Task 1: Conceptual Questions
 
-1.  
-
-    i\. What is the purpose of the lapply() function?
+1.  i\. What is the purpose of the lapply() function?
 
     > lapply() is part of the apply() family of functions and means list apply. lapply() applies a function over a list or vector and is useful when you want to apply a function to each element of a list or vector. lapply() always returns a list.
 
@@ -19,9 +17,7 @@ editor: visual
 
     > The equivalent purr function is map().
 
-2.  Suppose we have a list called my_list. Each element of the list is a numeric data frame (all columns
-    are numeric). We want use lapply() to run the code cor(numeric_matrix, method = "kendall")
-    on each element of the list. Write code to do this below!
+2.  Suppose we have a list called my_list. Each element of the list is a numeric data frame (all columns are numeric). We want use lapply() to run the code cor(numeric_matrix, method = "kendall") on each element of the list. Write code to do this below!
 
     > lapply(my_list, function(numeric_matrix) cor(numeric_matrix, method = "kendall"))
 
@@ -31,11 +27,11 @@ editor: visual
 
 4.  What is a side-effect function?
 
-    > A side effect function is a function that does not modify the data and isn't returned, but produces something.
+    > A side effect function is a function that does not modify the data and isn't returned, but produces something. Examples include loading files, print() and plotting graphics.
 
 5.  Why can you name a variable sd in a function and not cause any issues with the sd function?
 
-    > A function has it's own environment so when R is looking for the object it looks in the most local environment, which in this case, is the function environment.
+    > A function has it's own environment so when R is looking for the object it looks in the most local environment which, in this case, is the function environment. As a result, the sd in the function will not overwrite sd in BaseR.
 
 # Task 2: Writing R Functions
 
@@ -43,9 +39,53 @@ editor: visual
 
 ### Write a function for RMSE
 
+The goal of this section is to write a function that will take in two vectors and return Root Mean Square Error (RMSE). An ellipsis will be included in the function to allow for additional arguments. The function will be created one or two steps at a time so it can be checked for errors and calculations verified.
+
+The step is to calculate the difference between the response and predicted response, followed by squaring this difference. We can use map2() since we have two vectors as inputs. However, map2() alone will return a list which can cause problems in subsequent steps, so map2_dbl() should be use to return a vector. An anonymous function using x and y is use to calculate the difference between corresponding elements in each vector.
+
+```{r}
+library(tidyverse)
+#create vectors for testing
+response_vec <- c(10, 20)
+prediction_vec <- c(12, 21)
+getRMSE <- function(vector1, vector2, ...) {
+  result <- map2_dbl(vector1, vector2, \(x, y) x-y)
+  return(result)
+}
+getRMSE(response_vec, prediction_vec)
+
+```
+
+The next step is to take the square of the difference for each element in the vector returned from the above function. This step can be accomplished easily with map(). Alternatively, this step could have been performed along with the calculation of differences as one anonymous function, but I chose to keep them separate to verify my code. The function up to this point with the squared differences added is presented below.
+
+```{r}
+getRMSE <- function(vector1, vector2, ...) {
+  result <- map2_dbl(vector1, vector2, \(x, y) x-y) |>
+    map_dbl(\(x) x^2)
+  return(result)
+}
+squared_differences <- getRMSE(response_vec, prediction_vec)
+squared_differences
+```
+
+The next step is to sum up our squared differences and divide by n, which can be performed using mean(). The next step of taking the square root will also be added using map_dbl(). These steps ar also being combined with the previous steps to result in the final function for calculating RMSE.
+
+```{r}
+getRMSE <- function(vector1, vector2, ...) {
+  result <- map2_dbl(vector1, vector2, \(x, y) x-y) |>
+    map_dbl(\(x) x^2) |>
+    mean(...) |>
+    map_dbl(\(x) sqrt(x))
+  return(result)
+}
+getRMSE(response_vec, prediction_vec)
+```
+
 ## Question 2
 
 ### Create response and prediction values
+
+The code for getting a vector for responses and predictions was provide in the homework and is performed below.
 
 ```{r}
 set.seed(10)
@@ -59,22 +99,50 @@ pred <- predict(lm(resp ~ x), data.frame(x))
 ### Test RMSE function
 
 ```{r}
-
+getRMSE(resp, pred)
 ```
 
 ### Repeat with missing values
 
-```{r}
+Now we want to replace two values in the response vector with NA_real\_ and run getRMSE with and without specifying missing value behavior in the function. Two values can be replaced by specifying an index. I'll choose 1:2 so it is easy to view the replacement.
 
+```{r}
+resp[c(1:2)] <- NA_real_
+head(resp)
+```
+
+### RMSE function without specifying missing values behavior
+
+```{r}
+getRMSE(resp, pred)
+```
+
+### RMSE function specifying to ignore missing values
+
+```{r}
+getRMSE(resp, pred, na.rm = TRUE)
 ```
 
 ## Question 3
 
 ### Write a function for MAE
 
+The function for MAE will be similar the one for RMSE. In fact, modifying the RMSE function is the simplest way to go. The difference calculation from RMSE can be modified to take the absolute of the difference. The final step is to sum up the values and divide by n, which is a mean.
+
+```{r}
+getMAE <- function(vector1, vector2, ...) {
+  result <- map2_dbl(vector1, vector2, \(x, y) abs(x-y)) |>
+    mean(...)
+  return(result)
+}
+
+```
+
 ## Question 4
 
-### Create response values and predicitons
+### Create response values and predictions
+
+This code is the same as for question 2 but it is rerun to overwrite the NA values created previously.
 
 ```{r}
 set.seed(10)
@@ -87,18 +155,57 @@ pred <- predict(lm(resp ~ x), data.frame(x))
 ### Test MAE function
 
 ```{r}
-
+getMAE(resp, pred)
 ```
 
 ### Repeat MAE function with missing values
 
-```{r}
+Missing values are added as described before.
 
+```{r}
+resp[c(1:2)] <- NA_real_
+head(resp)
+
+```
+
+### Test MAE with no arguments regarding missing values (defaults)
+
+```{r}
+getMAE(resp, pred)
+```
+
+### Test MAE specifying missing values to be ignored
+
+```{r}
+getMAE(resp, pred, na.rm =TRUE)
 ```
 
 ## Question 5
 
-### Create wrapper function incorporating  getRMSE and get MAE
+### Create wrapper function incorporating getRMSE and getMAE
+
+To generate a wrapper function that can return both RMSE and MAE or one of the two, we can add an argument called "metrics" that consists of RMSE and MAE as the default. This will result in the return of both calculations as a list. The first requirement for this wrapper function is to check that the input data are numeric vectors. To do so, we can incorporate checks using is.vector( ), is.atomic) and is.numeric(). If the data inputs do not match one or more of these requirements, the function will abort and return that the vector "is not an atomic numeric vector". To allow the user to specify what calculations they want, we can use a series of if else statements. The first statement is for the default, specifying RMSE and MAE as both being in "metrics". To return the proper result, it must be one object, so a list is used to return a list containing both RMSE and MAE. The next two if else statements specify what should be returned if RMSE or MAE are specified as a metrics argument when the function is called.
+
+```{r}
+RMSE_MAE_wrapper <- function(vector1, vector2, metrics = c("RMSE", "MAE"), ...) {
+  if(!is.vector(vector1) || !is.atomic(vector1) || !is.numeric(vector1)) {
+    stop("vector1 is not an atomic numeric vector")
+  }
+  if(!is.vector(vector2) || !is.atomic(vector2) || !is.numeric(vector2)) {
+    stop("vector2 is not an atomic numeric vector")
+  }
+  
+  if("RMSE" %in% metrics & "MAE" %in% metrics) {
+    result <- list(RMSE = getRMSE(vector1, vector2, ...), 
+                   MAE = getMAE(vector1, vector2, ...))
+  } else if("RMSE" %in% metrics) {
+    result <- getRMSE(vector1, vector2, ...)
+    } else if("MAE" %in% metrics) { 
+      result <- getMAE(vector1, vector2, ...) 
+  }
+  return(result)
+}
+```
 
 ## Question 6
 
@@ -112,24 +219,151 @@ resp <- 3 + 10*x + rnorm(n)
 pred <- predict(lm(resp ~ x), data.frame(x))
 ```
 
-### Test wrapper function
+### Test wrapper function specifying RMSE
+
+Here, we specify RMSE in the metrics argument so that only the calculation for RMSE is returned.
 
 ```{r}
+RMSE_MAE_wrapper(resp, pred, metrics = "RMSE")
+```
 
+### Test wrapper function specifying MAE
+
+Here, we specify MAE in the metrics argument so that only the calculation for MAE is returned.
+
+```{r}
+RMSE_MAE_wrapper(resp, pred, metrics = "MAE")
+```
+
+### Test wrapper function using defaults
+
+Here, we specify nothing for the metrics argument so that the default list containing both RMSE and MAE are in the output.
+
+```{r}
+RMSE_MAE_wrapper(resp, pred)
 ```
 
 ### Repeat wrapper test with missing values
 
-```{r}
+The next steps of generating a new response vector with NA for two values is the same as done previously.
 
+```{r}
+resp[c(1:2)] <- NA_real_
+head(resp)
+```
+
+Next, each of the call variations will be executed.
+
+### Wrapper with missing values and specifying RMSE
+
+```{r}
+RMSE_MAE_wrapper(resp, pred, metrics = "RMSE")
+```
+
+### Wrapper specifying to ignore missing values and calculate RMSE
+
+```{r}
+RMSE_MAE_wrapper(resp, pred, metrics = "RMSE", na.rm = TRUE)
+```
+
+### Wrapper with missing values and specifying MAE
+
+```{r}
+RMSE_MAE_wrapper(resp, pred, metrics = "MAE")
+```
+
+### Wrapper specifying to ignore missing values and calculate MAE
+
+```{r}
+RMSE_MAE_wrapper(resp, pred, metrics = "MAE", na.rm = TRUE)
+```
+
+### Wrapper with missing values using default metrics
+
+```{r}
+RMSE_MAE_wrapper(resp, pred)
+```
+
+### Wrapper specifying to ignore missing values and using default metrics
+
+```{r}
+RMSE_MAE_wrapper(resp, pred, na.rm = TRUE)
 ```
 
 ### Test wrapper function with the wrong data type
 
 ```{r}
+#| error: true
+RMSE_MAE_wrapper(iris, pred)
+```
+
+# Task 3. Querying and API and Tidy_Style Function
+
+This section requires using newsapi.org to find an interesting topic to query. I chose to query Google Deepmind's AlphaFold, which predicts the 3D structure of a protein based on its amino acid sequence.
+
+## Question 1
+
+The following code uses GET() to obtain information about AlphaFold. For creating the URL, I followed guidelines from newsapi.org, using q=AlphaFold, a date of from=2024-05-28 and, following the advice of a classmate, referenced a file for my API key to keep it secure. The paste0() function, which concatenates multiple strings into one string, was used to construct the URL for the query. The structure for GET(url_id) reveals that the raw data is in "content".
+
+```{r}
+library(httr)
+library(jsonlite)
+source("api_key.R")
+url_id <- paste0("https://newsapi.org/v2/everything?q=AlphaFold&from=2024-05-28&sortBy=popularity&apiKey=", api_key)
+id_info <- GET(url_id)
+str(id_info, max.level = 1)
 
 ```
 
-# Querying and API and Tidy_Style Function
+## Question 2
 
-##  
+The raw data will be parsed by accessing content with \$content and selecting "articles" from the list, which is where the data frame resides, and converting this to a tibble. The resulting tibble has a source column that contains \<data.frame \[66 x 2\]\>. This data frame consists of the source id and name. We want to convert this to a list column. We can modify this using mutate() to replace the source column and convert to a list using apply() with a margin of 1 (for row).
+
+```{r}
+parsed <- fromJSON(rawToChar(id_info$content))
+parsed
+alphafold_info <- as_tibble(parsed$articles) 
+alphafold_info
+alphafold_info |>
+  mutate(source = apply(source, MARGIN = 1, as.list))
+
+```
+
+## Question 3
+
+The goal here is to write a function that can query newsapi.org. The function will take in arguments "subject", for the topic of interest and "start_date" for the "&from" portion of the URL which specifies the date from which to start the search. There is also an "api_key" argument, but the function is designed with the intent that the user stores their key in a file called api_key.R for security purposes, so "api_key" will always used for this argument. The URL is constructed based on the user's input arguments using paste0() . If we had wanted to hardcode the API key, the function would be the same but the source("api_key.R) line would be removed from the function code and the user would replace the api_key argument with their own API key when they call the function. The rest of the code is the same as above. One caveat with the date is that the user may not specify the correct format for date, so code could be added to the function to account for this (I couldn't figure this out) or a comment can be added within the function to specify the date format. Another potential issue is if someone wants to enter a subject with two words. For the function to work properly, the URL needs to be constructed so that a space in the form of "%20" is added between the words. A Google search turned up the function gsub(), so that is incorporated into the function to allow for a subject argument with more than one word. This function takes in the pattern, replacement and x (subject in our case). The complete function is presented below and was tested on the AlphaFold query. Returned results were the same as obtained previously.
+
+```{r}
+api_query <- function(subject, start_date = "2024-01-25", api_key) {
+  #subject: topic to search for
+  #start_date: starting date for news search in "YYYY-MM-DD" format
+  #api-key: API key for accessing API at newsapi.org, stored securely 
+  #in a api.key.R file
+  subject <- gsub(" ", "%20", subject)
+  source("api_key.R")
+  url_id <- paste0("https://newsapi.org/v2/everything?q=", subject,
+                   "&from=", start_date, "&sortBy=popularity&apiKey=", api_key)
+  id_info <- GET(url_id)
+  parsed <- fromJSON(rawToChar(id_info$content))
+  result <- as_tibble(parsed$articles) |>
+    mutate(source = apply(source, MARGIN = 1, as.list))
+  return(result)
+}
+#test
+#api_query("AlphaFold", "2024-05-28", api_key)
+
+```
+
+### Run API function two times
+
+The API function will first be tested by searching for Altera, which is start-up company working on AI that can play video games with real players.
+
+```{r}
+api_query("Altera", "2024-05-26", api_key)
+```
+
+Next, the API function will be tested on "behavioral nudge", inspired by an article in The Wall Street Journal about nudging people in the right direction for better decision making.
+
+```{r}
+api_query("behavioral nudge", "2024-05-26", api_key)
+```
