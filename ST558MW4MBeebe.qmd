@@ -98,6 +98,8 @@ pred <- predict(lm(resp ~ x), data.frame(x))
 
 ### Test RMSE function
 
+To test the RMSE function, all we need to do is call the getRMSE() function and enter the vectors resp and pred as arguments.
+
 ```{r}
 getRMSE(resp, pred)
 ```
@@ -118,6 +120,8 @@ getRMSE(resp, pred)
 ```
 
 ### RMSE function specifying to ignore missing values
+
+The argument na.rm=TRUE is used when the function is called to tell R to ignore missing values and calculate the mean of the numeric elements.
 
 ```{r}
 getRMSE(resp, pred, na.rm = TRUE)
@@ -291,6 +295,8 @@ RMSE_MAE_wrapper(resp, pred, na.rm = TRUE)
 ```
 
 ### Test wrapper function with the wrong data type
+
+To see what happens when an incorrect data type is used for one or more of the input arguments, I used the iris data, which is a data frame.
 
 ```{r}
 #| error: true

@@ -250,6 +250,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="test-rmse-function" class="level3">
 <h3 class="anchored" data-anchor-id="test-rmse-function">Test RMSE function</h3>
+<p>To test the RMSE function, all we need to do is call the getRMSE() function and enter the vectors resp and pred as arguments.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getRMSE</span>(resp, pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -279,6 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="rmse-function-specifying-to-ignore-missing-values" class="level3">
 <h3 class="anchored" data-anchor-id="rmse-function-specifying-to-ignore-missing-values">RMSE function specifying to ignore missing values</h3>
+<p>The argument na.rm=TRUE is used when the function is called to tell R to ignore missing values and calculate the mean of the numeric elements.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getRMSE</span>(resp, pred, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -502,6 +504,7 @@ $MAE
 </section>
 <section id="test-wrapper-function-with-the-wrong-data-type" class="level3">
 <h3 class="anchored" data-anchor-id="test-wrapper-function-with-the-wrong-data-type">Test wrapper function with the wrong data type</h3>
+<p>To see what happens when an incorrect data type is used for one or more of the input arguments, I used the iris data, which is a data frame.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">RMSE_MAE_wrapper</span>(iris, pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-error">
@@ -542,8 +545,8 @@ Attaching package: 'jsonlite'</code></pre>
  $ all_headers:List of 1
  $ cookies    :'data.frame':    0 obs. of  7 variables:
  $ content    : raw [1:72684] 7b 22 73 74 ...
- $ date       : POSIXct[1:1], format: "2024-06-26 02:32:18"
- $ times      : Named num [1:6] 0 0.0289 0.0432 0.0947 0.355 ...
+ $ date       : POSIXct[1:1], format: "2024-06-26 02:39:53"
+ $ times      : Named num [1:6] 0 0.0274 0.0434 0.1165 0.4871 ...
   ..- attr(*, "names")= chr [1:6] "redirect" "namelookup" "connect" "pretransfer" ...
  $ request    :List of 7
   ..- attr(*, "class")= chr "request"
